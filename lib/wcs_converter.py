@@ -30,7 +30,8 @@ def convert_to_imagecoord(cl, fl, wcs_proj, sky_to_sky, xy0):
             fl = fl[1:]
         elif fl[0] == Angle:
             rot1, rot2 = estimate_angle(wcs_proj, xy0[0], xy0[1], sky_to_sky)
-            new_cl.append(cl[0]+rot1-180.)
+#            new_cl.append(cl[0]+rot1-180.)
+            new_cl.append(cl[0]+rot2-90.) # use the angle between the Y axis and North
             cl = cl[1:]
             fl = fl[1:]
         else:

@@ -51,7 +51,7 @@ def is_string_like(obj):
 
 class sky2sky(object):
     def __init__(self, src, dest):
-
+    
         if is_string_like(src):
             src = coord_system[src.lower()]
 
@@ -104,8 +104,6 @@ def coord_system_guess(ctype1_name, ctype2_name, equinox):
        ctype2_name.upper().startswith("ELAT"):
         return "ecl"
 
-
-
     return None
 
 
@@ -127,7 +125,36 @@ def fix_header(header):
         new_cards.append(c)
 
     h = type(header)(new_cards)
+    
+    _remove_header_tdd(h) # ignore non-SIP distortions
+    
     return h
+
+
+def _remove_header_tdd(hdr):
+    # Remove any reference to TDD correction from distortion-corrected products.
+    # We also need to remove the D2IM* keywords so that astropy.WCS
+    # does not try to look for non-existent extensions (if only the
+    # header and NOT HDUList is supplied).
+    #
+    # Code below is taken on 'remove_distortion_keywords' from
+    # fitsblender/blendheaders.py
+    distortion_kws = ['TDDALPHA','TDDBETA','D2IMEXT','D2IMERR',
+                      'DGEOEXT','NPOLEXT']
+    
+    for kw in distortion_kws:
+        if kw in hdr:
+            del hdr[kw]
+    
+    # Remove paper IV related keywords related to the
+    #   DGEO correction here
+    for k in hdr.items():
+        if (k[0][:2] == 'DP'):
+            del hdr[k[0]+'*']
+            del hdr[k[0]+'.*']
+            del hdr[k[0]+'.*.*']
+        if (k[0][:2] == 'CP'):
+            del hdr[k[0]]
 
 
 def fix_lon(lon, lon_ref):
@@ -243,7 +270,7 @@ class ProjectionPywcsNd(_ProjectionSubInterface, ProjectionBase):
             import sys
             if sys.version_info >= (3,0):
                 header = repr(header.ascard).encode("ascii")
-            self._pywcs = pywcs.WCS(header=header)
+            self._pywcs = pywcs.wcsutil.HSTWCS(header=header)
         else:
             self._pywcs = header
 
@@ -273,17 +300,18 @@ class ProjectionPywcsNd(_ProjectionSubInterface, ProjectionBase):
         self.fix_lon(lon_lat)
 
         xy1 = lon_lat.transpose()
-
         # somehow, wcs_sky2pix does not work for some cases
-        xy21 = [self._pywcs.wcs_sky2pix([xy11], 1)[0] for xy11 in xy1]
-        #xy21 = self._pywcs.wcs_sky2pix(xy1, 1)
+#        xy21 = [self._pywcs.wcs_sky2pix([xy11], 1)[0] for xy11 in xy1]
+#        #xy21 = self._pywcs.wcs_sky2pix(xy1, 1)
+        xy21 = self._pywcs.all_sky2pix(xy1[:,0],xy1[:,1],origin=1)
+        xy2 = np.vstack(xy21)
 
-        xy2 = np.array(xy21).transpose()
+#        xy2 = np.array(xy21).transpose()
         return xy2
 
     def toworld(self, xy):
         """ 1, 1 base """
-        xy2 = self._pywcs.wcs_pix2sky(np.asarray(xy).T, 1)
+        xy2 = self._pywcs.all_pix2sky(np.asarray(xy).T, 1)
 
         lon_lat = xy2.T
         # fixme
@@ -388,7 +416,7 @@ class ProjectionPywcs(ProjectionBase):
     """
     def __init__(self, header):
         if hasattr(header, "ascard"):
-            self._pywcs = pywcs.WCS(header=header)
+            self._pywcs = pywcs.wcsutil.HSTWCS(header=header)
         else:
             self._pywcs = header
         ProjectionBase.__init__(self)
@@ -405,12 +433,12 @@ class ProjectionPywcs(ProjectionBase):
 
     def topixel(self, xy):
         """ 1, 1 base """
-        xy2 = self._pywcs.wcs_sky2pix(np.asarray(xy).T, 1)
+        xy2 = self._pywcs.all_sky2pix(np.asarray(xy).T, 1)
         return xy2.T[:2]
 
     def toworld(self, xy):
         """ 1, 1 base """
-        xy2 = self._pywcs.wcs_pix2sky(np.asarray(xy).T, 1)
+        xy2 = self._pywcs.all_pix2sky(np.asarray(xy).T, 1)
         return xy2.T[:2]
 
     def sub(self, axes):
