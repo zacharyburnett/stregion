@@ -84,7 +84,7 @@ class ShapeList(list):
         return region_filter
 
 
-    def get_mask(self, hdu=None, header=None, shape=None):
+    def get_mask(self, hdu=None, header=None, shape=None, rot_wrt_axis=1):
         """
         creates a 2-d mask.
 
@@ -98,7 +98,7 @@ class ShapeList(list):
         if hdu and shape is None:
             shape = hdu.data.shape
 
-        region_filter = self.get_filter(header=header)
+        region_filter = self.get_filter(header=header, rot_wrt_axis=rot_wrt_axis)
         mask = region_filter.mask(shape)
 
         return mask
@@ -234,7 +234,7 @@ def read_region_as_imagecoord(s, header, rot_wrt_axis=1):
     return rp.filter_shape(sss3)
 
 
-def get_mask(region, hdu):
+def get_mask(region, hdu, origin=1):
     """
     f = pyfits.read("test.fits")
     reg = read_region_as_imagecoord(s, f[0].header)
@@ -244,9 +244,9 @@ def get_mask(region, hdu):
     from pyregion.region_to_filter import as_region_filter
 
     data = hdu.data
-    header = hdu.header
+    #header = hdu.header
 
-    region_filter = as_region_filter(region, header=header)
+    region_filter = as_region_filter(region, origin=origin)
 
     mask = region_filter.mask(data)
 
