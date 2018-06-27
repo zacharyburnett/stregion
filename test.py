@@ -1,9 +1,9 @@
 import pytest
 
-import pyregion
+import stregion
 import os
 
-basedir = os.path.dirname(pyregion.__file__)
+basedir = os.path.dirname(stregion.__file__)
 
 lib_files_with_test = ["ds9_region_parser.py",
                        "region_numbers.py",

@@ -40,7 +40,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General substitutions.
-project = 'pyregion'
+project = 'stregion'
 copyright = '2009, Jae-Joon Lee'
 
 # The default replacements for |version| and |release|, also used in various
@@ -50,8 +50,8 @@ copyright = '2009, Jae-Joon Lee'
 #version = '0.1'
 # The full version, including alpha/beta/rc tags.
 #release = '0.1b'
-import pyregion
-version = pyregion.__version__
+import stregion
+version = stregion.__version__
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:

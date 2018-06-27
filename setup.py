@@ -1,6 +1,6 @@
 import sys
 import warnings
-from setuptools import setup, Extension
+from setuptools import setup, Extension, find_packages
 
 
 # check if cython or pyrex is available.
@@ -26,7 +26,7 @@ else:
 # compiler), set it to False
 WITH_FILTER = True
 
-with open('lib/version.py') as version_data:
+with open('stregion/version.py') as version_data:
     for line in version_data:
         if (line.startswith('__version__')):
             version = ''.join(line.strip().split('"')[1::2])
@@ -44,8 +44,7 @@ def main():
               download_url="http://github.com/spacetelescope/stregion/releases",
               license="MIT",
               platforms=["Linux", "MacOS X"],
-              packages=['pyregion'],
-              package_dir={'pyregion': 'lib'},
+              packages=find_packages('.'),
               install_requires=install_requires,
               use_2to3=False,
               )
@@ -76,7 +75,7 @@ def main():
         if cmdclass:
             ka["cmdclass"] = cmdclass
 
-        ka["ext_modules"] = [Extension("pyregion._region_filter",
+        ka["ext_modules"] = [Extension("stregion._region_filter",
                                        [PYREX_SOURCE],
                                        include_dirs=['./src',
                                                      numpy_include,

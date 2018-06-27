@@ -1,4 +1,4 @@
-from pyregion import read_region, read_region_as_imagecoord
+from stregion import read_region, read_region_as_imagecoord
 
 import math
 

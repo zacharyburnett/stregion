@@ -4,7 +4,7 @@ except ImportError:
     from astropy.io import fits as pyfits
 
 import matplotlib.pyplot as plt
-import pyregion
+import stregion
 
 import math
 
@@ -51,7 +51,7 @@ if 1:
     from mpl_toolkits.axes_grid.anchored_artists import AnchoredText
 
     for ax, reg_name in zip(grid, region_list):
-        r = pyregion.open(reg_name).as_imagecoord(h)
+        r = stregion.open(reg_name).as_imagecoord(h)
 
         patch_list, text_list = r.get_mpl_patches_texts()
         for p in patch_list:
