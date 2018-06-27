@@ -1,5 +1,5 @@
 import numpy as np
-import pyregion._region_filter as region_filter
+import stregion._region_filter as region_filter
 import warnings
 
 def as_region_filter(shape_list, origin=1):

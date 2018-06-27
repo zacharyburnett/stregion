@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-import pyregion
+import stregion
 
 region = """
 image
@@ -7,7 +7,7 @@ circle(100, 100, 80)
 box(200, 150, 150, 120, 0)
 """
 
-r = pyregion.parse(region)
+r = stregion.parse(region)
 mask_1or2 = r.get_mask(shape=(300,300))
 
 myfilter = r.get_filter()

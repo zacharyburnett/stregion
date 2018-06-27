@@ -1,6 +1,9 @@
+from __future__ import absolute_import
+
+
 import numpy as np
 #from pylab import savefig
-import pyregion
+import stregion
 
 try:
     from astropy import wcs as pywcs
@@ -23,13 +26,13 @@ def test_estimate_cdelt():
     wcs.wcs.crval = [l, b]
     wcs.wcs.ctype = ["GLON-ZEA".encode("ascii"), "GLAT-ZEA".encode("ascii")]
 
-    import pyregion.wcs_helper as wcs_helper
+    import stregion.wcs_helper as wcs_helper
     proj = wcs_helper.get_kapteyn_projection(wcs)
     cdelt = wcs_helper.estimate_cdelt(proj, 5.5, 5.5)
     
     assert np.allclose([cdelt], [0.1])
 
     region_string="fk5; circle(%s, %s, 0.5000)" % (ra,dec)
-    reg = pyregion.parse(region_string).as_imagecoord(wcs)
+    reg = stregion.parse(region_string).as_imagecoord(wcs)
 
     assert np.allclose([reg[0].coord_list[-1]], [0.5/0.1])

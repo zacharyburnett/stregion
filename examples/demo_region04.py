@@ -4,7 +4,7 @@ except ImportError:
     from astropy.io import fits as pyfits
 
 import matplotlib.pyplot as plt
-import pyregion
+import stregion
 
 import math
 
@@ -18,7 +18,7 @@ if 1:
     ax.set_ylim(600, 1100)
     ax.set_aspect(1)
 
-    r = pyregion.open(reg_name)
+    r = stregion.open(reg_name)
 
     patch_list, text_list = r.get_mpl_patches_texts()
     for p in patch_list:

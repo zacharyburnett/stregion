@@ -7,7 +7,7 @@ from demo_helper import pyfits_card_fromstring
 
 import matplotlib.pyplot as plt
 
-import pyregion
+import stregion
 
 # read in the image
 def demo_header():
@@ -22,7 +22,7 @@ header = demo_header() # sample fits header
 shape = (header["NAXIS1"], header["NAXIS2"])
 
 reg_name = "test.reg"
-r = pyregion.open(reg_name).as_imagecoord(header)
+r = stregion.open(reg_name).as_imagecoord(header)
 m = r.get_mask(shape=shape)
 
 
@@ -39,7 +39,7 @@ for t in text_list:
 # another region
 
 reg_name = "test02.reg"
-r = pyregion.open(reg_name).as_imagecoord(header)
+r = stregion.open(reg_name).as_imagecoord(header)
 m = r.get_mask(shape=shape)
 
 ax = plt.subplot(122)

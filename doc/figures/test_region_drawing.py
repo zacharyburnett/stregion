@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
-import pyregion
+import stregion
 try:
     from astropy.io import fits as pyfits
 except ImportError:
@@ -21,7 +21,7 @@ ax.imshow(f_xray[0].data,
           cmap=cm.gray, vmin=0., vmax=0.00038, origin="lower")
 
 reg_name = "test.reg"
-r = pyregion.open(reg_name).as_imagecoord(f_xray[0].header)
+r = stregion.open(reg_name).as_imagecoord(f_xray[0].header)
 
 patch_list, text_list = r.get_mpl_patches_texts()
 for p in patch_list:

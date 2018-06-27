@@ -242,7 +242,7 @@ def get_mask(region, hdu, origin=1):
     mask = get_mask(reg, f[0])
     """
 
-    from pyregion.region_to_filter import as_region_filter
+    from stregion.region_to_filter import as_region_filter
 
     data = hdu.data
     #header = hdu.header
@@ -255,10 +255,10 @@ def get_mask(region, hdu, origin=1):
 
 
 if __name__ == '__main__':
-    #reg = pyregion.open("../mos_fov.reg")
-    import pyregion
+    #reg = stregion.open("../mos_fov.reg")
+    import stregion
     proposed_fov = 'fk5;circle(290.96388,14.019167,843.31194")'
-    reg = pyregion.parse(proposed_fov)
+    reg = stregion.parse(proposed_fov)
     reg_imagecoord = reg.as_imagecoord(header)
     patches, txts = reg.get_mpl_patches_texts()
     m = reg.get_mask(hdu=f[0])
