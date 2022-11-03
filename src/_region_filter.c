@@ -10173,8 +10173,15 @@ static void __Pyx_AddTraceback(const char *funcname) {
         py_srcfile,   /*PyObject *filename,*/
         py_funcname,  /*PyObject *name,*/
         __pyx_lineno,   /*int firstlineno,*/
+        #if PY_MAJOR_VERSION >= 3 && PY_MINOR_VERSION >= 11
+        __pyx_empty_bytes,  /*PyObject *lnotab*/
+        __pyx_empty_bytes,  /* PyObject *exceptiontable */
+        __pyx_empty_bytes
+        #else
         __pyx_empty_bytes  /*PyObject *lnotab*/
+        #endif
     );
+    #if !(PY_MAJOR_VERSION >= 3 && PY_MINOR_VERSION >= 11)
     if (!py_code) goto bad;
     py_frame = PyFrame_New(
         PyThreadState_GET(), /*PyThreadState *tstate,*/
@@ -10185,6 +10192,7 @@ static void __Pyx_AddTraceback(const char *funcname) {
     if (!py_frame) goto bad;
     py_frame->f_lineno = __pyx_lineno;
     PyTraceBack_Here(py_frame);
+    #endif
 bad:
     Py_XDECREF(py_srcfile);
     Py_XDECREF(py_funcname);
