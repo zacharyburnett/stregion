@@ -1,4 +1,4 @@
-name: CI
+name: test
 
 on:
   push:
@@ -10,17 +10,20 @@ on:
   pull_request:
 
 jobs:
-  build:
-    name: build (Python ${{ matrix.python }}, ${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
+  test:
+    name: test (Python ${{ matrix.python }}, ${{ matrix.runs-on }})
+    runs-on: ${{ matrix.runs-on }}
     strategy:
       fail-fast: false
       matrix:
         python: [ '3.8', '3.9', '3.10', '3.11', '3.12' ]
-        os: [ ubuntu-latest, macos-latest ]
+        runs-on: [ ubuntu-latest, macos-latest ]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python }}
-      - run: pip install .
+          cache: pip
+          cache-dependency-files: pyproject.toml
+      - run: pip install .[test] pytest-xdist
+      - run: pytest -n auto
